@@ -1,0 +1,59 @@
+{% set version = "2025.0.0" %}
+{% set name = "lsprotocol" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/microsoft/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: f5e93c080c01ac27896114b996929e8474943b189b2a2dbf304dcd4663596d5c
+  skip: true  # [py<38]
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install ./packages/python -vv --no-build-isolation --no-deps
+
+requirements:
+  host:
+    - pip
+    - python
+    - flit-core >=3.2,<4
+  run:
+    - python
+    - attrs >=21.3.0
+    - cattrs !=23.2.1
+
+test:
+  source_files:
+    - conftest.py
+    - tests
+    - generator
+  imports: 
+    - lsprotocol
+  commands:
+    - pip check
+    - pytest -v tests
+  requires:
+    - pip
+    - pytest
+    - importlib_resources
+    - jsonschema
+    - mypy
+    - pyhamcrest
+
+about:
+  home: https://pypi.org/project/lsprotocol
+  summary: Python implementation of the Language Server Protocol.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  description: |
+    lsprotocol is a Python implementation of object types used in the Language Server Protocol (LSP).
+    This repository contains the code generator and the generated types for LSP.
+  doc_url: https://github.com/microsoft/lsprotocol/blob/main/README.md
+  dev_url: https://github.com/microsoft/lsprotocol
+
+extra:
+  recipe-maintainers:
+    - bollwyvl
